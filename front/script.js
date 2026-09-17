@@ -54,6 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
         displaySummary(fields);
       }
     });
+
+
+    document.getElementById('btn-close')?.addEventListener('click', () => {
+      document.getElementById('summary-card').style.display = 'none';
+      form.reset();
+      clearErrors();
+      form.style.display = 'flex';
+    });
   
     /**
      * Affiche un message d'erreur sous le champ concerné et applique la classe CSS .error
@@ -87,25 +95,25 @@ document.addEventListener('DOMContentLoaded', () => {
      * Masque le formulaire et génère la carte récapitulative dans la même page
      */
     function displaySummary(fields) {
-        // 1. Masquer le formulaire
-        document.getElementById('registration-form').style.display = 'none';
-      
-        // 2. Formater la date en français
-        const rawDate = fields.birthdate.value;
-        const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('fr-FR') : rawDate;
-      
-        // 3. Remplir les champs du récapitulatif
-        document.getElementById('res-login').textContent = fields.login.value;
-        document.getElementById('res-lastname').textContent = fields.lastname.value;
-        document.getElementById('res-firstname').textContent = fields.firstname.value;
-        document.getElementById('res-address').textContent = fields.address.value;
-        document.getElementById('res-email').textContent = fields.email.value;
-        document.getElementById('res-phone').textContent = fields.phone.value;
-        document.getElementById('res-birthdate').textContent = formattedDate;
-      
-        // 4. Afficher la carte de récapitulatif
-        document.getElementById('summary-card').style.display = 'block';
-      }
+      // 1. Masquer le formulaire
+      form.style.display = 'none';
+    
+      // 2. Formater la date en français
+      const rawDate = fields.birthdate.value;
+      const formattedDate = rawDate ? new Date(rawDate).toLocaleDateString('fr-FR') : rawDate;
+    
+      // 3. Remplir les champs du récapitulatif
+      document.getElementById('res-login').textContent = fields.login.value;
+      document.getElementById('res-lastname').textContent = fields.lastname.value;
+      document.getElementById('res-firstname').textContent = fields.firstname.value;
+      document.getElementById('res-address').textContent = fields.address.value;
+      document.getElementById('res-email').textContent = fields.email.value;
+      document.getElementById('res-phone').textContent = fields.phone.value;
+      document.getElementById('res-birthdate').textContent = formattedDate;
+    
+      // 4. Afficher la carte de récapitulatif
+      document.getElementById('summary-card').style.display = 'block';
+    }
   
     /**
      * Sécurise les entrées utilisateur contre les injections XSS lors de l'affichage
@@ -118,4 +126,4 @@ document.addEventListener('DOMContentLoaded', () => {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
-  });
+});
