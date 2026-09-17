@@ -6,55 +6,55 @@
   <title>Formulaire d'inscription</title>
 
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="form.js"></script>
 </head>
 <body>
 
-    <!-- CECI N'EST PAS MON CODE-->
   <!-- Formulaire d'inscription -->
   <form id="registration-form" action="" method="post">
+    <h1>Inscription</h1>
+
     <!-- Login -->
-    <label for="login">Login</label>
+    <label for="login">Login <span class="required">*</span></label>
     <input type="text" name="login" id="login" required />
     <p></p>
     
     <!-- Mot de passe -->
-    <label for="password">Mot de passe</label>
+    <label for="password">Mot de passe <span class="required">*</span></label>
     <input type="password" name="password" id="password" required />
     <p></p>
 
     <!-- Confirmation du mot de passe -->
-    <label for="confirmed_password">Confirmation du mot de passe</label>
+    <label for="confirmed_password">Confirmation du mot de passe <span class="required">*</span></label>
     <input type="password" name="confirmed_password" id="confirmed_password" required />
     <p></p>
 
     <!-- Nom -->
-    <label for="lastname">Nom</label>
+    <label for="lastname">Nom <span class="required">*</span></label>
     <input type="text" name="lastname" id="lastname" required />
     <p></p>
 
     <!-- Prénom -->
-    <label for="firstname">Prénom</label>
+    <label for="firstname">Prénom <span class="required">*</span></label>
     <input type="text" name="firstname" id="firstname" required />
     <p></p>
 
     <!-- Adresse -->
-    <label for="address">Adresse</label>
+    <label for="address">Adresse <span class="required">*</span></label>
     <input type="text" name="address" id="address" required />
     <p></p>
 
     <!-- Email -->
-    <label for="email">Email</label>
+    <label for="email">Email <span class="required">*</span></label>
     <input type="email" name="email" id="email" required />
     <p></p>
 
     <!-- Téléphone -->
-    <label for="phone">Téléphone</label>
+    <label for="phone">Téléphone <span class="required">*</span></label>
     <input type="tel" name="phone" id="phone" required />
     <p></p>
 
     <!-- Date de naissance -->
-    <label for="birthdate">Date de naissance</label>
+    <label for="birthdate">Date de naissance <span class="required">*</span></label>
     <input type="date" name="birthdate" id="birthdate" required />
     <p></p>
 
@@ -64,6 +64,7 @@
   <!-- Section Récapitulative (masquée au départ) -->
   <div id="summary-card" class="summary-card" style="display: none;">
     <h1>Récapitulatif de votre inscription</h1>
+    <p class="summary-message">Votre inscription est faite, voici le récapitulatif des saisies.</p>
     
     <div class="summary-item">
       <span class="label">Login :</span>
@@ -99,7 +100,9 @@
       <span class="label">Date de naissance :</span>
       <span class="value" id="res-birthdate"></span>
     </div>
-  </div>
 
+    <button type="button" id="btn-close" class="btn-secondary">Fermer</button>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
