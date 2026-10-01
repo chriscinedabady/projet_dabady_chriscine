@@ -1,0 +1,171 @@
+$sw-yellow: #ffe81f;
+$sw-black: #0d0d0d;
+$sw-card-bg: rgba(20, 20, 25, 0.95);
+$saber-blue: #2e67f8;
+$saber-red: #ff3333;
+$sw-gray: #a1a1aa;
+
+// Conteneur global pour mettre le formulaire et la carte côte à côte
+.page-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1rem;
+}
+
+.starwars-form {
+  flex: 1;
+  min-width: 320px;
+  max-width: 440px;
+  padding: 2.5rem 2rem;
+  background: $sw-card-bg;
+  border: 2px solid $sw-yellow;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba($sw-yellow, 0.25), inset 0 0 15px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  color: white;
+
+  h2 {
+    margin: 0 0 0.5rem 0;
+    color: $sw-yellow;
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 8px rgba($sw-yellow, 0.6);
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: $sw-gray;
+
+    span { color: #e5e7eb; }
+
+    .input-with-toggle {
+      display: flex;
+      position: relative;
+      align-items: center;
+
+      input {
+        flex: 1;
+        padding-right: 5rem;
+      }
+
+      .toggle-btn {
+        position: absolute;
+        right: 8px;
+        background: transparent;
+        border: 1px solid $sw-yellow;
+        color: $sw-yellow;
+        border-radius: 4px;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: $sw-yellow;
+          color: $sw-black;
+        }
+      }
+    }
+
+    input {
+      padding: 0.7rem;
+      background-color: #1a1a24;
+      border: 1px solid #374151;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.25s ease;
+
+      &:focus {
+        border-color: $saber-blue;
+        box-shadow: 0 0 10px rgba($saber-blue, 0.6);
+      }
+    }
+
+    .error-msg {
+      color: $saber-red;
+      font-size: 0.75rem;
+      font-weight: normal;
+      text-shadow: 0 0 5px rgba($saber-red, 0.5);
+    }
+  }
+
+  .submit-btn {
+    margin-top: 1rem;
+    padding: 0.85rem;
+    background-color: $sw-yellow;
+    color: $sw-black;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 12px rgba($sw-yellow, 0.4);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 0 20px rgba($sw-yellow, 0.8);
+    }
+
+    &:disabled {
+      background-color: #374151;
+      color: #6b7280;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Carte Hologramme récapitulative
+.summary-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 380px;
+  padding: 2rem;
+  background: rgba(10, 25, 45, 0.85);
+  border: 1px solid $saber-blue;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba($saber-blue, 0.3);
+  color: white;
+
+  h3 {
+    margin-top: 0;
+    color: $saber-blue;
+    font-size: 1.1rem;
+    letter-spacing: 1.5px;
+    border-bottom: 1px dashed rgba($saber-blue, 0.4);
+    padding-bottom: 0.75rem;
+    text-shadow: 0 0 8px rgba($saber-blue, 0.5);
+  }
+
+  .summary-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+
+    p {
+      margin: 0;
+      strong { color: $sw-gray; }
+    }
+
+    .security-status {
+      margin-top: 0.5rem;
+      .valid { color: #10b981; font-weight: bold; }
+      .pending { color: #f59e0b; }
+    }
+  }
+}
