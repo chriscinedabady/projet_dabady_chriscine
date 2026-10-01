@@ -6,8 +6,8 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-sign-up',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.scss'
+  templateUrl: './sign-up.html',
+  styleUrl: './sign-up.scss'
 })
 export class SignUpComponent {
   formData = {
