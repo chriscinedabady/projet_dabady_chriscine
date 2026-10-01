@@ -114,16 +114,4 @@ document.addEventListener('DOMContentLoaded', () => {
       // 4. Afficher la carte de récapitulatif
       document.getElementById('summary-card').style.display = 'block';
     }
-  
-    /**
-     * Sécurise les entrées utilisateur contre les injections XSS lors de l'affichage
-     */
-    function escapeHtml(str) {
-      return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
 });
