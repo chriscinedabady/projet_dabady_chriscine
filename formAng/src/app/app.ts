@@ -7,7 +7,6 @@ import { SignUpComponent } from './components/sign-up/sign-up'; // <-- 1. Import
     SignUpComponent],
   selector: 'app-root',
   styleUrl: './app.scss',
-  standalone: true,
   templateUrl: './app.html',
 })
 export class App {
