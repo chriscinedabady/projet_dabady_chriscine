@@ -25,6 +25,17 @@
   padding: 0;
 }
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--app-bg-color);
@@ -32,10 +43,16 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; // Empêche l'image de sauter au scroll
+  background-attachment: fixed;
   min-height: 100vh;
+}
+
+// Cible le composant racine et le main pour assurer le centrage parfait
+app-root, main {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  width: 100%;
   padding: 1.5rem;
 }

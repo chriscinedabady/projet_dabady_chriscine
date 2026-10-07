@@ -19,6 +19,7 @@ $shadow-card-dark: 0 10px 25px rgba(0, 0, 0, 0.6);
 
 // --- Conteneur Carte du Formulaire ---
 .form-container {
+  margin: auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
