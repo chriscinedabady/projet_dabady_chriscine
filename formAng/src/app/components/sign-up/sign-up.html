@@ -1,0 +1,100 @@
+<div class="page-container">
+    <!-- Le Formulaire -->
+    <form #signUpForm="ngForm" (ngSubmit)="onSubmit()" class="starwars-form">
+      <h2>REJOINDRE L'ALLIANCE</h2>
+  
+      <!-- Identifiant -->
+      <label>
+        <span>Identifiant galactique *</span>
+        <input type="text" name="login" [(ngModel)]="formData.login" #loginCtrl="ngModel" required />
+        @if (loginCtrl.invalid && loginCtrl.touched) {
+          <small class="error-msg">L'identifiant galactique est requis !</small>
+        }
+      </label>
+  
+      <!-- Nom -->
+      <label>
+        <span>Nom *</span>
+        <input type="text" name="nom" [(ngModel)]="formData.nom" #nomCtrl="ngModel" required />
+        @if (nomCtrl.invalid && nomCtrl.touched) {
+          <small class="error-msg">Le nom est requis.</small>
+        }
+      </label>
+  
+      <!-- Prénom -->
+      <label>
+        <span>Prénom *</span>
+        <input type="text" name="prenom" [(ngModel)]="formData.prenom" #prenomCtrl="ngModel" required />
+        @if (prenomCtrl.invalid && prenomCtrl.touched) {
+          <small class="error-msg">Le prénom est requis.</small>
+        }
+      </label>
+  
+      <!-- Email -->
+      <label>
+        <span>Holonet Email *</span>
+        <input type="email" name="email" [(ngModel)]="formData.email" #emailCtrl="ngModel" required email />
+        @if (emailCtrl.invalid && emailCtrl.touched) {
+          <small class="error-msg">
+            @if (emailCtrl.errors?.['required']) { L'email est requis. }
+            @else if (emailCtrl.errors?.['email']) { Adresse Holonet invalide ! }
+          </small>
+        }
+      </label>
+  
+      <!-- Mot de passe -->
+      <label>
+        <span>Code Sécurité (Mot de passe) *</span>
+        <div class="input-with-toggle">
+          <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="formData.password" #passCtrl="ngModel" required />
+          <button type="button" class="toggle-btn" (click)="togglePasswordVisibility()">
+            {{ showPassword ? '🙈 Masquer' : '👁️ Voir' }}
+          </button>
+        </div>
+        @if (passCtrl.invalid && passCtrl.touched) {
+          <small class="error-msg">Le code de sécurité est obligatoire.</small>
+        }
+      </label>
+  
+      <!-- Confirmation mot de passe -->
+      <label>
+        <span>Confirmation Code Sécurité *</span>
+        <div class="input-with-toggle">
+          <input [type]="showConfirmPassword ? 'text' : 'password'" name="confirmPassword" [(ngModel)]="formData.confirmPassword" #confirmPassCtrl="ngModel" required />
+          <button type="button" class="toggle-btn" (click)="toggleConfirmPasswordVisibility()">
+            {{ showConfirmPassword ? '🙈 Masquer' : '👁️ Voir' }}
+          </button>
+        </div>
+        @if (confirmPassCtrl.invalid && confirmPassCtrl.touched) {
+          <small class="error-msg">La confirmation est obligatoire.</small>
+        }
+        @if (formData.confirmPassword && formData.password !== formData.confirmPassword) {
+          <small class="error-msg">Les deux codes de sécurité doivent être identiques !</small>
+        }
+      </label>
+  
+      <button type="submit" class="submit-btn" [disabled]="signUpForm.invalid || formData.password !== formData.confirmPassword">
+        ENGAGER DANS LA FORCE
+      </button>
+    </form>
+  
+    <!-- Carte Récapitulative / Hologramme de profil -->
+    <div class="summary-card">
+      <h3>HOLOGRAMME DE FICHE RECRUE</h3>
+      
+      <div class="summary-content">
+        <p><strong>Identifiant :</strong> {{ formData.login || '---' }}</p>
+        <p><strong>Nom :</strong> {{ formData.nom || '---' }}</p>
+        <p><strong>Prénom :</strong> {{ formData.prenom || '---' }}</p>
+        <p><strong>Email :</strong> {{ formData.email || '---' }}</p>
+        <p class="security-status">
+          <strong>Statut Sécurité :</strong> 
+          @if (formData.password && formData.password === formData.confirmPassword) {
+            <span class="valid">Code configuré ✔</span>
+          } @else {
+            <span class="pending">En attente 🔒</span>
+          }
+        </p>
+      </div>
+    </div>
+  </div>
