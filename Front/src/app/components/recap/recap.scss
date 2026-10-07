@@ -1,0 +1,130 @@
+// Variables cohérentes avec le formulaire
+$card-bg-light: #ffffff;
+$text-light: #212121;
+$card-bg-dark: #1e1e1e;
+$text-dark: #f5f5f5;
+
+$border-color: #e0e0e0;
+$border-dark: #333333;
+$radius-md: 12px;
+$radius-sm: 6px;
+$shadow-card: 0 10px 25px rgba(0, 0, 0, 0.12);
+$shadow-card-dark: 0 10px 25px rgba(0, 0, 0, 0.6);
+
+.recap-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 520px;            // Même largeur maximale que le formulaire
+  background-color: $card-bg-light;
+  color: $text-light;
+  padding: 2rem;
+  border-radius: $radius-md;
+  box-shadow: $shadow-card;
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 0.75rem;
+    margin: 0;
+  }
+
+  // Organisation propre des couples étiquette / valeur
+  dl {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 0.6rem 1rem;
+    margin: 0;
+
+    dt {
+      font-weight: 600;
+      color: #616161;
+    }
+
+    dd {
+      margin: 0;
+      word-break: break-word; // Évite les débordements de texte long
+    }
+  }
+
+  // Bloc image maîtrisé
+  figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid $border-color;
+    padding-top: 1rem;
+
+    img {
+      width: 100%;
+      max-height: 250px;       // Limite la hauteur
+      object-fit: cover;       // Conserve le ratio sans déformer
+      border-radius: $radius-sm;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    figcaption {
+      font-size: 0.8rem;
+      color: #757575;
+      font-style: italic;
+    }
+
+    .btn-retour {
+        margin-top: 1rem;
+        padding: 0.85rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1976d2;
+        background-color: transparent;
+        border: 1px solid #1976d2;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      
+        &:hover {
+          background-color: #1976d2;
+          color: #ffffff;
+        }
+      
+    }
+  }
+
+  // Adaptation automatique au thème sombre
+  @media (prefers-color-scheme: dark) {
+    background-color: $card-bg-dark;
+    color: $text-dark;
+    box-shadow: $shadow-card-dark;
+
+    h2, figure {
+      border-color: $border-dark;
+    }
+
+    dl dt {
+      color: #b0b0b0;
+    }
+
+    figure figcaption {
+      color: #9e9e9e;
+    }
+  }
+
+  // Version mobile
+  @media (max-width: 600px) {
+    padding: 1.25rem;
+    max-width: 100%;
+
+    dl {
+      grid-template-columns: 1fr; 
+      gap: 0.25rem;
+
+      dt {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+}
