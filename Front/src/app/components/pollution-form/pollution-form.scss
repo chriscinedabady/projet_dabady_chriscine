@@ -117,6 +117,8 @@ $shadow-card-dark: 0 10px 25px rgba(0, 0, 0, 0.6);
     input, select, textarea {
       background-color: $input-bg-dark;
       border-color: $border-dark;
+      color: $text-dark;
+      color-scheme: dark;
     }
   }
 
