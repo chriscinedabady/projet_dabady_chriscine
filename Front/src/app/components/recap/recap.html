@@ -1,0 +1,37 @@
+@if (data) {
+    <article class="recap-card">
+      <h2>Récapitulatif de la déclaration</h2>
+  
+      <dl>
+        <dt>Titre</dt>
+        <dd>{{ data.titre }}</dd>
+  
+        <dt>Type de pollution</dt>
+        <dd>{{ data.type }}</dd>
+  
+        <dt>Description</dt>
+        <dd>{{ data.description }}</dd>
+  
+        <dt>Date d'observation</dt>
+        <dd>{{ data.dateObservation | date:'dd/MM/yyyy' }}</dd>
+  
+        <dt>Lieu</dt>
+        <dd>{{ data.lieu }}</dd>
+  
+        <dt>Coordonnées GPS</dt>
+        <dd>Latitude : {{ data.latitude }} | Longitude : {{ data.longitude }}</dd>
+      </dl>
+  
+      @if (data.photoUrl) {
+        <figure>
+          <img [src]="data.photoUrl" alt="Photo de la pollution signalée" />
+          <figcaption>Photo fournie lors du signalement</figcaption>
+        </figure>
+      }
+      
+      <!-- Bouton de retour -->
+    <button type="button" class="btn-retour" (click)="onReset()">
+      Revenir à la déclaration
+    </button>
+    </article>
+  }

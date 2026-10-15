@@ -1,0 +1,69 @@
+<form [formGroup]="pollutionForm" (ngSubmit)="onSubmit()" class="form-container" novalidate>
+    <h2>Déclaration d'une nouvelle pollution</h2>
+  
+    <!-- Titre -->
+    <label for="titre">Titre de la pollution *</label>
+    <input id="titre" type="text" formControlName="titre" placeholder="Ex: Déchets plastiques" />
+    @if (f['titre'].touched && f['titre'].invalid) {
+      <small class="error">Le titre est obligatoire.</small>
+    }
+  
+    <!-- Type de pollution -->
+    <label for="type">Type de pollution *</label>
+    <select id="type" formControlName="type">
+      <option value="" disabled selected>Sélectionnez un type</option>
+      @for (t of typesPollution; track t) {
+        <option [value]="t">{{ t }}</option>
+      }
+    </select>
+    @if (f['type'].touched && f['type'].invalid) {
+      <small class="error">Veuillez sélectionner un type.</small>
+    }
+  
+    <!-- Description -->
+    <label for="description">Description *</label>
+    <textarea id="description" rows="3" formControlName="description" placeholder="Description de l'incident..."></textarea>
+    @if (f['description'].touched && f['description'].invalid) {
+      <small class="error">La description est obligatoire.</small>
+    }
+  
+    <!-- Date d'observation -->
+    <label for="dateObservation">Date d'observation *</label>
+    <input id="dateObservation" type="date" [max]="dateMax" formControlName="dateObservation" />
+
+    @if (f['dateObservation'].touched && f['dateObservation'].invalid) {
+    @if (f['dateObservation'].errors?.['required']) {
+        <small class="error">La date est obligatoire.</small>
+    }
+    @if (f['dateObservation'].errors?.['dateFutur']) {
+        <small class="error">La date ne peut pas être dans le futur.</small>
+    }
+    }
+  
+    <!-- Lieu -->
+    <label for="lieu">Lieu *</label>
+    <input id="lieu" type="text" formControlName="lieu" placeholder="Ex: Berges du Rhin" />
+    @if (f['lieu'].touched && f['lieu'].invalid) {
+      <small class="error">Le lieu est obligatoire.</small>
+    }
+  
+    <!-- Coordonnées géographiques -->
+    <label for="latitude">Latitude * (-90 à 90)</label>
+    <input id="latitude" type="number" step="any" formControlName="latitude" placeholder="48.5839" />
+    @if (f['latitude'].touched && f['latitude'].invalid) {
+      <small class="error">Latitude valide requise (-90 à 90).</small>
+    }
+  
+    <label for="longitude">Longitude * (-180 à 180)</label>
+    <input id="longitude" type="number" step="any" formControlName="longitude" placeholder="7.7455" />
+    @if (f['longitude'].touched && f['longitude'].invalid) {
+      <small class="error">Longitude valide requise (-180 à 180).</small>
+    }
+  
+    <!-- Photo optionnelle -->
+    <label for="photoUrl">Photo (URL) - Optionnel</label>
+    <input id="photoUrl" type="url" formControlName="photoUrl" placeholder="https://..." />
+  
+    <!-- Bouton actif pour permettre le scroll aux erreurs en cas de clic prématuré -->
+    <button type="submit">Déclarer</button>
+  </form>

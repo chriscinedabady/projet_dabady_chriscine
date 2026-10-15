@@ -1,0 +1,9 @@
+<main>
+  @if (!pollutionDeclaree) {
+    <!-- 1. Formulaire : écoute l'événement formSubmitted émis par l'enfant -->
+    <app-pollution-form (formSubmitted)="onPollutionValidee($event)"></app-pollution-form>
+  } @else {
+    <!-- 2. Récapitulatif : reçoit l'objet via la directive [data] (@Input) -->
+    <app-recap [data]="pollutionDeclaree" (reset)="pollutionDeclaree = null"></app-recap>
+  }
+</main>
