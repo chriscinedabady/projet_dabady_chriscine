@@ -1,4 +1,5 @@
 export interface Pollution {
+    id?: number | string,
     titre: string;
     type: string;
     description: string;
