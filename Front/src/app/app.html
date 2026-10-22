@@ -1,9 +1,20 @@
+<button class="hamburger" (click)="toggleSidebar()" [class.active]="sidebarOpen">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+@if (sidebarOpen) {
+  <div class="overlay" (click)="closeSidebar()"></div>
+}
+
+<nav class="sidebar" [class.open]="sidebarOpen">
+  <h3>Navigation</h3>
+  <a routerLink="/pollutions" routerLinkActive="active-link" (click)="closeSidebar()">Liste des pollutions</a>
+  <a routerLink="/nouvelle-pollution" routerLinkActive="active-link" (click)="closeSidebar()">Déclarer une pollution</a>
+  <a routerLink="/signup" routerLinkActive="active-link" (click)="closeSidebar()">Inscription</a>
+</nav>
+
 <main>
-  @if (!pollutionDeclaree) {
-    <!-- 1. Formulaire : écoute l'événement formSubmitted émis par l'enfant -->
-    <app-pollution-form (formSubmitted)="onPollutionValidee($event)"></app-pollution-form>
-  } @else {
-    <!-- 2. Récapitulatif : reçoit l'objet via la directive [data] (@Input) -->
-    <app-recap [data]="pollutionDeclaree" (reset)="pollutionDeclaree = null"></app-recap>
-  }
+  <router-outlet></router-outlet>
 </main>
