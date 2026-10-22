@@ -1,0 +1,45 @@
+<main class="container">
+  <h2>Liste des pollutions recensées</h2>
+
+  <section class="filters" aria-label="Filtres de recherche">
+    <input 
+      type="text" 
+      placeholder="Rechercher par titre ou lieu..." 
+      [ngModel]="searchTerm()" 
+      (ngModelChange)="searchTerm.set($event)" 
+    />
+
+    <select [ngModel]="selectedType()" (ngModelChange)="selectedType.set($event)">
+      <option value="">Tous les types</option>
+      <option value="Plastique">Plastique</option>
+      <option value="Chimique">Chimique</option>
+      <option value="Dépôt sauvage">Dépôt sauvage</option>
+      <option value="Eau">Eau</option>
+      <option value="Air">Air</option>
+      <option value="Autre">Autre</option>
+    </select>
+  </section>
+  
+  <section class="card-grid">
+    @for (pollution of filteredPollutions(); track pollution.id) {
+      <article class="card">
+        @if (pollution.photoUrl) {
+          <figure class="card-figure">
+            <img [src]="pollution.photoUrl" [alt]="pollution.titre" />
+          </figure>
+        }
+        <h3>{{ pollution.titre }}</h3>
+        <p><strong>Type :</strong> {{ pollution.type }}</p>
+        <p><strong>Lieu :</strong> {{ pollution.lieu }}</p>
+        <p><strong>Date :</strong> {{ pollution.dateObservation }}</p>
+        
+        <footer class="actions">
+          <a class="btn-detail" [routerLink]="['/pollutions', pollution.id]">Voir détail</a>
+          <button class="btn-danger" (click)="onDelete(pollution.id)">Supprimer</button>
+        </footer>
+      </article>
+    } @empty {
+      <p class="empty-message">Aucune pollution ne correspond à vos critères.</p>
+    }
+  </section>
+</main>
