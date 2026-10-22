@@ -1,0 +1,72 @@
+<main class="signup-container">
+  <h2>Inscription</h2>
+
+  <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
+    <section class="form-group">
+      <label for="username">Nom d'utilisateur</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        [(ngModel)]="formData.username"
+        required
+        #usernameInput="ngModel"
+      />
+      @if (usernameInput.invalid && usernameInput.touched) {
+        <span class="error-text">Le nom d'utilisateur est requis.</span>
+      }
+    </section>
+
+    <section class="form-group">
+      <label for="email">Adresse email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [(ngModel)]="formData.email"
+        required
+        email
+        #emailInput="ngModel"
+      />
+      @if (emailInput.invalid && emailInput.touched) {
+        <span class="error-text">Veuillez entrer un email valide.</span>
+      }
+    </section>
+
+    <section class="form-group">
+      <label for="password">Mot de passe</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="formData.password"
+        required
+        minlength="6"
+        #passwordInput="ngModel"
+      />
+      @if (passwordInput.invalid && passwordInput.touched) {
+        <span class="error-text">Le mot de passe doit contenir au moins 6 caractères.</span>
+      }
+    </section>
+
+    <button type="submit" [disabled]="signupForm.invalid || isLoading">
+      @if (isLoading) {
+        <span>Chargement...</span>
+      } @else {
+        <span>S'inscrire</span>
+      }
+    </button>
+  </form>
+
+  @if (successMessage) {
+    <p class="alert alert-success">
+      {{ successMessage }}
+    </p>
+  }
+
+  @if (errorMessage) {
+    <p class="alert alert-danger">
+      {{ errorMessage }}
+    </p>
+  }
+</main>
