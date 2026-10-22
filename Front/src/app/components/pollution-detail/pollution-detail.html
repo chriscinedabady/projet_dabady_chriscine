@@ -1,0 +1,31 @@
+<main class="detail-container">
+  @if (loading()) {
+    <p>Chargement des détails...</p>
+  } @else if (error()) {
+    <p class="error-message">{{ error() }}</p>
+  } @else if (pollution(); as p) {
+    <article class="card-detail">
+      <h2>{{ p.titre }}</h2>
+      
+      @if (p.photoUrl) {
+        <figure class="detail-figure">
+          <img [src]="p.photoUrl" [alt]="p.titre" class="detail-photo" />
+        </figure>
+      }
+
+      <section class="info-group">
+        <p><strong>Type :</strong> {{ p.type }}</p>
+        <p><strong>Lieu :</strong> {{ p.lieu }}</p>
+        <p><strong>Date d'observation :</strong> {{ p.dateObservation }}</p>
+        <p><strong>Coordonnées GPS :</strong> Lat {{ p.latitude }}, Long {{ p.longitude }}</p>
+      </section>
+
+      <section class="description-section">
+        <h3>Description</h3>
+        <p>{{ p.description }}</p>
+      </section>
+
+      <a routerLink="/pollutions" class="btn-back">← Retour à la liste</a>
+    </article>
+  }
+</main>
