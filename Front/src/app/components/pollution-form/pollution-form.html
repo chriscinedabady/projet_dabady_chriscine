@@ -63,7 +63,9 @@
     <!-- Photo optionnelle -->
     <label for="photoUrl">Photo (URL) - Optionnel</label>
     <input id="photoUrl" type="url" formControlName="photoUrl" placeholder="https://..." />
-  
-    <!-- Bouton actif pour permettre le scroll aux erreurs en cas de clic prématuré -->
+    @if (f['photoUrl'].touched && f['photoUrl'].invalid) {
+      <small class="error">Veuillez renseigner un format valide.</small>
+    }
+
     <button type="submit">Déclarer</button>
   </form>
