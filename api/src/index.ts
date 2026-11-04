@@ -60,6 +60,18 @@ db.sequelize
         ]);
         console.log("Jeu de données initial pour la table pollution inséré avec succès.");
       }
+
+      const userCount = await db.users.count();
+      if (userCount === 0) {
+        await db.users.bulkCreate([
+          {
+            username: "johndoe",
+            email: "john@example.com",
+            password: "hashedpassword123"
+          }
+        ]);
+        console.log("Utilisateur initial inséré avec succès.");
+      }
     } catch (seedErr: unknown) {
       console.warn("Remarque : impossible d'insérer les données d'initialisation :", seedErr);
     }
