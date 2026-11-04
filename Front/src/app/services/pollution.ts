@@ -11,7 +11,7 @@ import { environment } from '../../environments/environment';
 export class PollutionService {
   private http = inject(HttpClient);
   
-  private apiUrl = `${environment.apiUrl}/pollutions`;
+  private apiUrl = `${environment.apiUrl}/api/pollutions`;
 
   getPollutions(): Observable<Pollution[]> {
     return this.http.get<Pollution[]>(this.apiUrl);

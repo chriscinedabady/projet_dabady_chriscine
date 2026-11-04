@@ -10,14 +10,26 @@ import { SignUpPayload, User } from '../models/user';
 export class AuthService {
   private http = inject(HttpClient);
 
-  private apiUrl = `${environment.apiUrl}/users`;
+  private apiUrl = `${environment.apiUrl}/api/users`;
 
   /**
-   * Envoie une requête POST pour inscrire un nouvel utilisateur.
-   * @param userData Les informations saisies dans le formulaire (sans id)
-   * @returns Un Observable de l'utilisateur créé (avec id retourné par l'API)
+   * Récupère la liste des utilisateurs (GET /api/users).
+   */
+  getUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.apiUrl);
+  }
+
+  /**
+   * Envoie une requête POST pour inscrire un nouvel utilisateur (POST /api/users).
    */
   signUp(userData: SignUpPayload): Observable<User> {
     return this.http.post<User>(this.apiUrl, userData);
+  }
+
+  /**
+   * Supprime un utilisateur par son identifiant (DELETE /api/users/:id).
+   */
+  deleteUser(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
