@@ -18,7 +18,11 @@ export const routes: Routes = [
     loadComponent: () => import('./components/pollution-form/pollution-form').then(m => m.PollutionForm)
   },
 
-  // URL "/signup"  →  page d'inscription (du TP précédent)
+  {
+    path: 'modifier-pollution/:id',
+    loadComponent: () => import('./components/pollution-form/pollution-form').then(m => m.PollutionForm)
+  },
+
   {
     path: 'signup',
     loadComponent: () => import('./components/signup/signup').then(m => m.SignupComponent)
