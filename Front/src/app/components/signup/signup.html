@@ -1,5 +1,5 @@
 <main class="signup-container">
-  <h2>Inscription</h2>
+  <h2>Inscription d'un utilisateur</h2>
 
   <form #signupForm="ngForm" (ngSubmit)="onSubmit(signupForm)">
     <section class="form-group">
@@ -69,4 +69,23 @@
       {{ errorMessage }}
     </p>
   }
+
+  <section class="users-list-section">
+    <h3>Utilisateurs inscrits ({{ users().length }})</h3>
+    @if (users().length > 0) {
+      <ul class="users-list">
+        @for (user of users(); track user.id) {
+          <li class="user-item">
+            <div class="user-info">
+              <strong>{{ user.username }}</strong>
+              <span>{{ user.email }}</span>
+            </div>
+            <button type="button" class="btn-danger" (click)="onDeleteUser(user.id)">Supprimer</button>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="empty-users">Aucun utilisateur enregistré pour le moment.</p>
+    }
+  </section>
 </main>

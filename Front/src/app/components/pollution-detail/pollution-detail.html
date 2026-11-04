@@ -25,7 +25,10 @@
         <p>{{ p.description }}</p>
       </section>
 
-      <a routerLink="/pollutions" class="btn-back">← Retour à la liste</a>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a routerLink="/pollutions" class="btn-back">← Retour à la liste</a>
+        <a [routerLink]="['/modifier-pollution', p.id]" class="btn-back">✎ Modifier cette pollution</a>
+      </div>
     </article>
   }
 </main>

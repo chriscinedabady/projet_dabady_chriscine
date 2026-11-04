@@ -35,6 +35,7 @@
         
         <footer class="actions">
           <a class="btn-detail" [routerLink]="['/pollutions', pollution.id]">Voir détail</a>
+          <a class="btn-detail" [routerLink]="['/modifier-pollution', pollution.id]">Modifier</a>
           <button class="btn-danger" (click)="onDelete(pollution.id)">Supprimer</button>
         </footer>
       </article>

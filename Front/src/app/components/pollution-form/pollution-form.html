@@ -1,5 +1,5 @@
 <form [formGroup]="pollutionForm" (ngSubmit)="onSubmit()" class="form-container" novalidate>
-    <h2>Déclaration d'une nouvelle pollution</h2>
+    <h2>{{ isEditMode ? "Modification d'une pollution" : "Déclaration d'une nouvelle pollution" }}</h2>
   
     <!-- Titre -->
     <label for="titre">Titre de la pollution *</label>
@@ -67,5 +67,5 @@
       <small class="error">Veuillez renseigner un format valide.</small>
     }
 
-    <button type="submit">Déclarer</button>
+    <button type="submit">{{ isEditMode ? "Enregistrer les modifications" : "Déclarer" }}</button>
   </form>
