@@ -1,5 +1,5 @@
 <form [formGroup]="pollutionForm" (ngSubmit)="onSubmit()" class="form-container" novalidate>
-    <h2>Déclaration d'une nouvelle pollution</h2>
+    <h2>{{ isEditMode ? "Modification d'une pollution" : "Déclaration d'une nouvelle pollution" }}</h2>
   
     <!-- Titre -->
     <label for="titre">Titre de la pollution *</label>
@@ -63,7 +63,9 @@
     <!-- Photo optionnelle -->
     <label for="photoUrl">Photo (URL) - Optionnel</label>
     <input id="photoUrl" type="url" formControlName="photoUrl" placeholder="https://..." />
-  
-    <!-- Bouton actif pour permettre le scroll aux erreurs en cas de clic prématuré -->
-    <button type="submit">Déclarer</button>
+    @if (f['photoUrl'].touched && f['photoUrl'].invalid) {
+      <small class="error">Veuillez renseigner un format valide.</small>
+    }
+
+    <button type="submit">{{ isEditMode ? "Enregistrer les modifications" : "Déclarer" }}</button>
   </form>
