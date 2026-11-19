@@ -124,6 +124,66 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
+ * Authentifie un utilisateur (POST /api/users/login).
+ */
+export const login = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { identifier, email, username, password } = req.body;
+    const rawLogin = identifier ?? email ?? username;
+
+    if (
+      typeof rawLogin !== "string" ||
+      typeof password !== "string" ||
+      !rawLogin.trim() ||
+      !password
+    ) {
+      res.status(400).json({
+        message: "L'identifiant (email ou nom d'utilisateur) et le mot de passe sont obligatoires."
+      });
+      return;
+    }
+
+    const cleanLogin = rawLogin.trim().toLowerCase();
+
+    const user = await Users.findOne({
+      where: {
+        [Op.or]: [
+          where(fn("LOWER", col("email")), cleanLogin),
+          where(fn("LOWER", col("username")), cleanLogin)
+        ]
+      }
+    });
+
+    if (!user || !user.password) {
+      res.status(401).json({
+        message: "Identifiant ou mot de passe incorrect."
+      });
+      return;
+    }
+
+    const isHashed = user.password.startsWith("$2");
+    const isPasswordValid = isHashed
+      ? await bcrypt.compare(password, user.password)
+      : password === user.password;
+
+    if (!isPasswordValid) {
+      res.status(401).json({
+        message: "Identifiant ou mot de passe incorrect."
+      });
+      return;
+    }
+
+    res.status(200).json({
+      id: user.id,
+      username: user.username,
+      email: user.email
+    });
+  } catch (err: unknown) {
+    handleServerError(res, "la connexion de l'utilisateur", err);
+  }
+};
+
+/**
  * Supprime un utilisateur par son identifiant (DELETE /api/users/:id).
  */
 export const remove = async (req: Request, res: Response): Promise<void> => {
@@ -151,5 +211,5 @@ export const remove = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { getAll, create, remove };
+export default { getAll, create, login, remove };
 

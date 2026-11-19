@@ -17,9 +17,20 @@
 
 <nav class="sidebar" [class.open]="sidebarOpen()" aria-label="Navigation principale">
   <h3>Navigation</h3>
-  <a routerLink="/pollutions" routerLinkActive="active-link" (click)="closeSidebar()">Liste des pollutions</a>
-  <a routerLink="/nouvelle-pollution" routerLinkActive="active-link" (click)="closeSidebar()">Déclarer une pollution</a>
+  @if (isAuthenticated()) {
+    <a routerLink="/pollutions" routerLinkActive="active-link" (click)="closeSidebar()">Liste des pollutions</a>
+    <a routerLink="/nouvelle-pollution" routerLinkActive="active-link" (click)="closeSidebar()">Déclarer une pollution</a>
+  } @else {
+    <a routerLink="/login" routerLinkActive="active-link" (click)="closeSidebar()">Connexion</a>
+  }
   <a routerLink="/signup" routerLinkActive="active-link" (click)="closeSidebar()">Inscription</a>
+
+  @if (currentUser(); as user) {
+    <div class="sidebar-user">
+      <p class="user-badge">Connecté : <strong>{{ user.username }}</strong></p>
+      <button type="button" class="btn-logout" (click)="onLogout()">Se déconnecter</button>
+    </div>
+  }
 </nav>
 
 <main>

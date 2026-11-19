@@ -6,3 +6,8 @@ export interface User {
 }
 
 export type SignUpPayload = Omit<User, 'id'>;
+
+export interface LoginPayload {
+  identifier: string;
+  password: string;
+}
