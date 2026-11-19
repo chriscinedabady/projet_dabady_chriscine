@@ -7,17 +7,15 @@ import { environment } from '../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-
 export class PollutionService {
   private http = inject(HttpClient);
-  
   private apiUrl = `${environment.apiUrl}/api/pollutions`;
 
   getPollutions(): Observable<Pollution[]> {
     return this.http.get<Pollution[]>(this.apiUrl);
   }
 
-  getPollutionById(id: number | string): Observable<Pollution> {
+  getPollutionById(id: number): Observable<Pollution> {
     return this.http.get<Pollution>(`${this.apiUrl}/${id}`);
   }
 
@@ -25,11 +23,11 @@ export class PollutionService {
     return this.http.post<Pollution>(this.apiUrl, pollution);
   }
 
-  updatePollution(id: number | string, pollution: Pollution): Observable<Pollution> {
+  updatePollution(id: number, pollution: Omit<Pollution, 'id'>): Observable<Pollution> {
     return this.http.put<Pollution>(`${this.apiUrl}/${id}`, pollution);
   }
 
-  deletePollution(id: number | string): Observable<void> {
+  deletePollution(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

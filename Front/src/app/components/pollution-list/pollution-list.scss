@@ -97,7 +97,7 @@
     }
   }
   
-  .empty-message {
+  .empty-message, .loading-message, .error-message {
     text-align: center;
     color: var(--text-muted);
     font-size: 1.1rem;
@@ -105,4 +105,9 @@
     background-color: var(--bg-card);
     border-radius: var(--radius-md);
     border: 1px dashed var(--border-color);
+  }
+
+  .error-message {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
   }

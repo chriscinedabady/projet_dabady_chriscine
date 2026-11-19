@@ -1,14 +1,21 @@
-<button class="hamburger" (click)="toggleSidebar()" [class.active]="sidebarOpen">
+<button
+  type="button"
+  class="hamburger"
+  (click)="toggleSidebar()"
+  [class.active]="sidebarOpen()"
+  [attr.aria-expanded]="sidebarOpen()"
+  aria-label="Ouvrir ou fermer le menu de navigation"
+>
   <span></span>
   <span></span>
   <span></span>
 </button>
 
-@if (sidebarOpen) {
+@if (sidebarOpen()) {
   <div class="overlay" (click)="closeSidebar()"></div>
 }
 
-<nav class="sidebar" [class.open]="sidebarOpen">
+<nav class="sidebar" [class.open]="sidebarOpen()" aria-label="Navigation principale">
   <h3>Navigation</h3>
   <a routerLink="/pollutions" routerLinkActive="active-link" (click)="closeSidebar()">Liste des pollutions</a>
   <a routerLink="/nouvelle-pollution" routerLinkActive="active-link" (click)="closeSidebar()">Déclarer une pollution</a>

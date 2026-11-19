@@ -1,31 +1,35 @@
 <main class="detail-container">
-  @if (loading()) {
+  @if (pollutionResource.isLoading()) {
     <p>Chargement des détails...</p>
-  } @else if (error()) {
-    <p class="error-message">{{ error() }}</p>
-  } @else if (pollution(); as p) {
+  } @else if (pollutionResource.error()) {
+    <p class="error-message">Impossible de charger cette pollution.</p>
+  } @else if (pollutionResource.value(); as p) {
     <article class="card-detail">
       <h2>{{ p.titre }}</h2>
       
       @if (p.photoUrl) {
         <figure class="detail-figure">
-          <img [src]="p.photoUrl" [alt]="p.titre" class="detail-photo" />
+          <img [src]="p.photoUrl" [alt]="p.titre" class="detail-photo" loading="lazy" />
         </figure>
       }
 
       <section class="info-group">
         <p><strong>Type :</strong> {{ p.type }}</p>
         <p><strong>Lieu :</strong> {{ p.lieu }}</p>
-        <p><strong>Date d'observation :</strong> {{ p.dateObservation }}</p>
+        <p><strong>Date d'observation :</strong> {{ p.dateObservation | date:'dd/MM/yyyy' }}</p>
         <p><strong>Coordonnées GPS :</strong> Lat {{ p.latitude }}, Long {{ p.longitude }}</p>
       </section>
+
+      <div class="danger-badge" [appHighlightPollution]="p.dangerosite">
+        <p><strong>Niveau de dangerosité :</strong> {{ p.dangerosite }} / 100 ({{ p.dangerosite | pollutionLevel }})</p>
+      </div>
 
       <section class="description-section">
         <h3>Description</h3>
         <p>{{ p.description }}</p>
       </section>
 
-      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+      <div class="detail-actions">
         <a routerLink="/pollutions" class="btn-back">← Retour à la liste</a>
         <a [routerLink]="['/modifier-pollution', p.id]" class="btn-back">✎ Modifier cette pollution</a>
       </div>

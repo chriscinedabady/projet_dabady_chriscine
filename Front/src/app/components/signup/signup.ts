@@ -1,30 +1,28 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth';
 import { SignUpPayload, User } from '../../models/user';
 
 @Component({
   selector: 'app-signup',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './signup.html',
-  styleUrl: './signup.scss'
+  styleUrl: './signup.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SignupComponent implements OnInit {
   private authService = inject(AuthService);
 
   users = signal<User[]>([]);
+  isLoading = signal(false);
+  successMessage = signal('');
+  errorMessage = signal('');
 
   formData: SignUpPayload = {
     username: '',
     email: '',
     password: ''
   };
-
-  isLoading = false;
-  successMessage = '';
-  errorMessage = '';
 
   ngOnInit(): void {
     this.loadUsers();
@@ -42,33 +40,38 @@ export class SignupComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.successMessage.set('');
+    this.errorMessage.set('');
 
     this.authService.signUp(this.formData).subscribe({
       next: (createdUser) => {
-        this.isLoading = false;
-        this.successMessage = `Inscription réussie ! Bienvenue ${createdUser.username}.`;
+        this.isLoading.set(false);
+        this.successMessage.set(`Inscription réussie ! Bienvenue ${createdUser.username}.`);
         form.resetForm();
         this.loadUsers();
       },
       error: (error) => {
-        this.isLoading = false;
-        this.errorMessage = "Une erreur est survenue lors de l'inscription.";
+        this.isLoading.set(false);
+        this.errorMessage.set(
+          error?.error?.message || "Une erreur est survenue lors de l'inscription."
+        );
         console.error('Erreur API :', error);
       }
     });
   }
 
-  onDeleteUser(id: number | string | undefined): void {
-    if (!id) return;
+  onDeleteUser(id: number | undefined): void {
+    if (id === undefined) return;
     if (confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) {
       this.authService.deleteUser(id).subscribe({
         next: () => {
           this.users.update((list) => list.filter((u) => u.id !== id));
         },
-        error: (err) => console.error('Erreur lors de la suppression :', err)
+        error: (err) => {
+          console.error('Erreur lors de la suppression :', err);
+          this.errorMessage.set("Impossible de supprimer cet utilisateur.");
+        }
       });
     }
   }

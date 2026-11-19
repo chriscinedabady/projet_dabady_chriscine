@@ -1,39 +1,25 @@
-import { Component, inject, Input, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, input, numberAttribute } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { PollutionService } from '../../services/pollution';
-import { Pollution } from '../../models/pollution.model';
+import { PollutionLevelPipe } from '../../pipes/pollution-level-pipe';
+import { HighlightPollution } from '../../directives/highlight-pollution';
 
 @Component({
   selector: 'app-pollution-detail',
-  standalone: true,
-  imports: [CommonModule, RouterModule],
-  templateUrl: './pollution-detail.html'
+  imports: [RouterLink, DatePipe, PollutionLevelPipe, HighlightPollution],
+  templateUrl: './pollution-detail.html',
+  styleUrl: './pollution-detail.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-export class PollutionDetailComponent implements OnInit {
+export class PollutionDetailComponent {
   private pollutionService = inject(PollutionService);
 
-  @Input() id!: string | number;
+  readonly id = input.required<number, string | number>({ transform: numberAttribute });
 
-  pollution = signal<Pollution | null>(null);
-  loading = signal<boolean>(true);
-  error = signal<string | null>(null);
-
-  ngOnInit(): void {
-    if (this.id) {
-      this.pollutionService.getPollutionById(this.id).subscribe({
-        next: (data) => {
-          this.pollution.set(data);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set('Impossible de charger cette pollution.');
-          this.loading.set(false);
-          console.error(err);
-        }
-      });
-    }
-  }
+  readonly pollutionResource = rxResource({
+    params: () => this.id(),
+    stream: ({ params: id }) => this.pollutionService.getPollutionById(id)
+  });
 }
-

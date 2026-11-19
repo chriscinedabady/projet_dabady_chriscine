@@ -83,3 +83,16 @@
       }
     }
   }
+
+.danger-badge {
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

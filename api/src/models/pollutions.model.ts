@@ -10,10 +10,11 @@ export interface PollutionAttributes {
   latitude: number;
   longitude: number;
   photoUrl?: string | null;
+  dangerosite: number;
 }
 
 export interface PollutionCreationAttributes
-  extends Optional<PollutionAttributes, "id" | "photoUrl"> {}
+  extends Optional<PollutionAttributes, "id" | "photoUrl" | "dangerosite"> {}
 
 export interface PollutionInstance
   extends Model<PollutionAttributes, PollutionCreationAttributes>,
@@ -67,6 +68,11 @@ export default function definePollutions(
         type: DataTypes.STRING,
         allowNull: true,
         field: "photo_url"
+      },
+      dangerosite: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
       }
     },
     {

@@ -10,10 +10,12 @@
         name="username"
         [(ngModel)]="formData.username"
         required
+        minlength="2"
+        maxlength="50"
         #usernameInput="ngModel"
       />
       @if (usernameInput.invalid && usernameInput.touched) {
-        <span class="error-text">Le nom d'utilisateur est requis.</span>
+        <span class="error-text">Le nom d'utilisateur est requis (2 à 50 caractères).</span>
       }
     </section>
 
@@ -41,16 +43,19 @@
         name="password"
         [(ngModel)]="formData.password"
         required
-        minlength="6"
+        minlength="8"
+        pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}"
         #passwordInput="ngModel"
       />
       @if (passwordInput.invalid && passwordInput.touched) {
-        <span class="error-text">Le mot de passe doit contenir au moins 6 caractères.</span>
+        <span class="error-text">
+          Le mot de passe doit contenir au moins 8 caractères, dont une majuscule, une minuscule et un chiffre.
+        </span>
       }
     </section>
 
-    <button type="submit" [disabled]="signupForm.invalid || isLoading">
-      @if (isLoading) {
+    <button type="submit" [disabled]="signupForm.invalid || isLoading()">
+      @if (isLoading()) {
         <span>Chargement...</span>
       } @else {
         <span>S'inscrire</span>
@@ -58,15 +63,15 @@
     </button>
   </form>
 
-  @if (successMessage) {
+  @if (successMessage()) {
     <p class="alert alert-success">
-      {{ successMessage }}
+      {{ successMessage() }}
     </p>
   }
 
-  @if (errorMessage) {
+  @if (errorMessage()) {
     <p class="alert alert-danger">
-      {{ errorMessage }}
+      {{ errorMessage() }}
     </p>
   }
 

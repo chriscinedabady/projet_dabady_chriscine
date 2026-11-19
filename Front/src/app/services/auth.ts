@@ -9,7 +9,6 @@ import { SignUpPayload, User } from '../models/user';
 })
 export class AuthService {
   private http = inject(HttpClient);
-
   private apiUrl = `${environment.apiUrl}/api/users`;
 
   /**
@@ -29,7 +28,7 @@ export class AuthService {
   /**
    * Supprime un utilisateur par son identifiant (DELETE /api/users/:id).
    */
-  deleteUser(id: number | string): Observable<void> {
+  deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

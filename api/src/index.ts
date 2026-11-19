@@ -1,5 +1,6 @@
 import express, { Application, Request, Response } from "express";
 import cors, { CorsOptions } from "cors";
+import bcrypt from "bcrypt";
 import db from "./models";
 import initRoutes from "./routes";
 
@@ -45,7 +46,8 @@ db.sequelize
             lieu: "Marseille",
             latitude: 43.2965,
             longitude: 5.3698,
-            photoUrl: ""
+            photoUrl: "",
+            dangerosite: 35
           },
           {
             titre: "Déchet chimique",
@@ -55,7 +57,8 @@ db.sequelize
             lieu: "Strasbourg",
             latitude: 48.5734,
             longitude: 7.7521,
-            photoUrl: ""
+            photoUrl: "",
+            dangerosite: 85
           }
         ]);
         console.log("Jeu de données initial pour la table pollution inséré avec succès.");
@@ -63,11 +66,12 @@ db.sequelize
 
       const userCount = await db.users.count();
       if (userCount === 0) {
+        const defaultPasswordHash = await bcrypt.hash("password123", 10);
         await db.users.bulkCreate([
           {
             username: "johndoe",
             email: "john@example.com",
-            password: "hashedpassword123"
+            password: defaultPasswordHash
           }
         ]);
         console.log("Utilisateur initial inséré avec succès.");

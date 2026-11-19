@@ -1,8 +1,22 @@
-import { Component, inject, ElementRef, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; 
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input
+} from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators
+} from '@angular/forms';
+import { Router } from '@angular/router';
+import { POLLUTION_TYPES } from '../../models/pollution.constants';
+import { Pollution } from '../../models/pollution.model';
 import { PollutionService } from '../../services/pollution';
 
 export function datePasseeOuAujourdhui(control: AbstractControl): ValidationErrors | null {
@@ -10,14 +24,12 @@ export function datePasseeOuAujourdhui(control: AbstractControl): ValidationErro
     return null;
   }
 
-  // Récupère la date du jour en heure locale au format YYYY-MM-DD
   const now = new Date();
   const annee = now.getFullYear();
   const mois = String(now.getMonth() + 1).padStart(2, '0');
   const jour = String(now.getDate()).padStart(2, '0');
   const aujourdhuiStr = `${annee}-${mois}-${jour}`;
 
-  // Comparaison directe des chaînes "YYYY-MM-DD"
   if (control.value > aujourdhuiStr) {
     return { dateFutur: true };
   }
@@ -25,72 +37,89 @@ export function datePasseeOuAujourdhui(control: AbstractControl): ValidationErro
   return null;
 }
 
+export function httpUrlValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (!value || typeof value !== 'string' || value.trim().length === 0) {
+    return null;
+  }
+
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      return { invalidUrl: true };
+    }
+    return null;
+  } catch {
+    return { invalidUrl: true };
+  }
+}
+
 @Component({
   selector: 'app-pollution-form',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './pollution-form.html',
-  styleUrl: './pollution-form.scss'
+  styleUrl: './pollution-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PollutionForm implements OnInit {
+export class PollutionForm {
   private pollutionService = inject(PollutionService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
-  private el = inject(ElementRef);
-  
-  @Input() id?: string | number;
 
-  pollutionForm: FormGroup;
-  isEditMode = false;
+  readonly id = input<number | undefined, string | number | undefined>(undefined, {
+    transform: (val) => (val !== undefined && val !== '' ? Number(val) : undefined)
+  });
+
+  readonly isEditMode = computed(() => {
+    const currentId = this.id();
+    return currentId !== undefined && !Number.isNaN(currentId);
+  });
+
+  readonly pollutionResource = rxResource({
+    params: () => (this.isEditMode() ? this.id() : undefined),
+    stream: ({ params: id }) => this.pollutionService.getPollutionById(id)
+  });
 
   private now = new Date();
-  dateMax: string = `${this.now.getFullYear()}-${String(this.now.getMonth() + 1).padStart(2, '0')}-${String(this.now.getDate()).padStart(2, '0')}`;
-  
-  typesPollution: string[] = [
-    'Plastique',
-    'Chimique',
-    'Dépôt sauvage',
-    'Eau',
-    'Air',
-    'Autre'
-  ];
+  readonly dateMax = `${this.now.getFullYear()}-${String(this.now.getMonth() + 1).padStart(2, '0')}-${String(this.now.getDate()).padStart(2, '0')}`;
+  readonly typesPollution = POLLUTION_TYPES;
+
+  pollutionForm = this.fb.nonNullable.group({
+    titre: ['', Validators.required],
+    type: ['', Validators.required],
+    description: ['', Validators.required],
+    dateObservation: ['', [Validators.required, datePasseeOuAujourdhui]],
+    lieu: ['', Validators.required],
+    latitude: [null as number | null, [Validators.required, Validators.min(-90), Validators.max(90)]],
+    longitude: [null as number | null, [Validators.required, Validators.min(-180), Validators.max(180)]],
+    photoUrl: ['', httpUrlValidator],
+    dangerosite: [50, [Validators.required, Validators.min(0), Validators.max(100)]]
+  });
 
   constructor() {
-    this.pollutionForm = this.fb.group({
-      titre: ['', Validators.required],
-      type: ['', Validators.required],
-      description: ['', Validators.required],
-      dateObservation: ['', [Validators.required, datePasseeOuAujourdhui]],
-      lieu: ['', Validators.required],
-      latitude: [null, [Validators.required, Validators.min(-90), Validators.max(90)]],
-      longitude: [null, [Validators.required, Validators.min(-180), Validators.max(180)]],
-      photoUrl: ['', Validators.pattern(/^(https?:\/\/).+/)]
+    effect(() => {
+      const pollution = this.pollutionResource.value();
+      if (pollution && this.isEditMode()) {
+        this.pollutionForm.patchValue({
+          titre: pollution.titre,
+          type: pollution.type,
+          description: pollution.description,
+          dateObservation: pollution.dateObservation,
+          lieu: pollution.lieu,
+          latitude: pollution.latitude,
+          longitude: pollution.longitude,
+          photoUrl: pollution.photoUrl || '',
+          dangerosite: pollution.dangerosite
+        });
+      }
     });
-  }
 
-  ngOnInit(): void {
-    if (this.id) {
-      this.isEditMode = true;
-      this.pollutionService.getPollutionById(this.id).subscribe({
-        next: (pollution) => {
-          this.pollutionForm.patchValue({
-            titre: pollution.titre,
-            type: pollution.type,
-            description: pollution.description,
-            dateObservation: pollution.dateObservation,
-            lieu: pollution.lieu,
-            latitude: pollution.latitude,
-            longitude: pollution.longitude,
-            photoUrl: pollution.photoUrl || ''
-          });
-        },
-        error: (err) => {
-          console.error('Erreur lors du chargement de la pollution à modifier :', err);
-          alert('Impossible de charger la pollution à modifier.');
-          this.router.navigate(['/pollutions']);
-        }
-      });
-    }
+    effect(() => {
+      if (this.pollutionResource.error()) {
+        alert('Impossible de charger la pollution à modifier.');
+        this.router.navigate(['/pollutions']);
+      }
+    });
   }
 
   get f() {
@@ -98,42 +127,51 @@ export class PollutionForm implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.pollutionForm.valid) {
-      if (this.isEditMode && this.id) {
-        this.pollutionService.updatePollution(this.id, this.pollutionForm.value).subscribe({
-          next: () => {
-            alert('Pollution modifiée avec succès !');
-            this.router.navigate(['/pollutions']);
-          },
-          error: (err) => {
-            console.error('Erreur lors de la modification :', err);
-            alert('Erreur lors de la modification de la pollution');
-          }
-        });
-      } else {
-        this.pollutionService.addPollution(this.pollutionForm.value).subscribe({
-          next: () => {
-            alert('Pollution créée avec succès !');
-            this.pollutionForm.reset();
-            this.router.navigate(['/pollutions']);
-          },
-          error: (err) => {
-            console.error('Erreur lors de la création :', err);
-            alert('Erreur lors de la création de la pollution');
-          }
-        });
-      }
-    } else {
+    if (this.pollutionForm.invalid) {
       this.pollutionForm.markAllAsTouched();
-
-      setTimeout(() => {
-        const premierInvalide = this.el.nativeElement.querySelector('.ng-invalid') as HTMLElement | null;
-
-        if (premierInvalide) {
-          premierInvalide.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          premierInvalide.focus();
-        }
-      });
+      return;
     }
+
+    const raw = this.pollutionForm.getRawValue();
+    const payload: Omit<Pollution, 'id'> = {
+      titre: raw.titre,
+      type: raw.type,
+      description: raw.description,
+      dateObservation: raw.dateObservation,
+      lieu: raw.lieu,
+      latitude: Number(raw.latitude),
+      longitude: Number(raw.longitude),
+      photoUrl: raw.photoUrl ? raw.photoUrl.trim() : null,
+      dangerosite: Number(raw.dangerosite)
+    };
+
+    const currentId = this.id();
+    const request$ =
+      this.isEditMode() && currentId !== undefined
+        ? this.pollutionService.updatePollution(currentId, payload)
+        : this.pollutionService.addPollution(payload);
+
+    request$.subscribe({
+      next: () => {
+        alert(
+          this.isEditMode()
+            ? 'Pollution modifiée avec succès !'
+            : 'Pollution créée avec succès !'
+        );
+        if (!this.isEditMode()) {
+          this.pollutionForm.reset();
+        }
+        this.router.navigate(['/pollutions']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la sauvegarde :', err);
+        alert(
+          err?.error?.message ||
+            (this.isEditMode()
+              ? 'Erreur lors de la modification de la pollution'
+              : 'Erreur lors de la création de la pollution')
+        );
+      }
+    });
   }
 }
