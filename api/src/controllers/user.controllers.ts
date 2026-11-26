@@ -10,9 +10,7 @@ const Users = db.users;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
-/**
- * Récupère la liste de tous les utilisateurs (GET /api/users).
- */
+//GET /api/users
 export const getAll = async (_req: Request, res: Response): Promise<void> => {
   try {
     const data = await Users.findAll({
@@ -75,14 +73,14 @@ export const create = async (req: Request, res: Response): Promise<void> => {
     const existingUser = await Users.findOne({
       where: {
         [Op.or]: [
-          where(fn("LOWER", col("email")), normalizedEmail),
+          { email: normalizedEmail },
           where(fn("LOWER", col("username")), cleanUsername.toLowerCase())
         ]
       }
     });
 
     if (existingUser) {
-      const isEmailTaken = existingUser.email.toLowerCase() === normalizedEmail;
+      const isEmailTaken = existingUser.email === normalizedEmail;
       res.status(409).json({
         message: isEmailTaken
           ? "Cette adresse email est déjà associée à un compte."
@@ -128,13 +126,12 @@ export const create = async (req: Request, res: Response): Promise<void> => {
  */
 export const login = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { identifier, email, username, password } = req.body;
-    const rawLogin = identifier ?? email ?? username;
+    const { identifier, password } = req.body;
 
     if (
-      typeof rawLogin !== "string" ||
+      typeof identifier !== "string" ||
       typeof password !== "string" ||
-      !rawLogin.trim() ||
+      !identifier.trim() ||
       !password
     ) {
       res.status(400).json({
@@ -143,12 +140,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const cleanLogin = rawLogin.trim().toLowerCase();
+    const cleanLogin = identifier.trim().toLowerCase();
 
     const user = await Users.findOne({
       where: {
         [Op.or]: [
-          where(fn("LOWER", col("email")), cleanLogin),
+          { email: cleanLogin },
           where(fn("LOWER", col("username")), cleanLogin)
         ]
       }
@@ -161,10 +158,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isHashed = user.password.startsWith("$2");
-    const isPasswordValid = isHashed
-      ? await bcrypt.compare(password, user.password)
-      : password === user.password;
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
       res.status(401).json({

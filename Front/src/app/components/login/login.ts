@@ -46,6 +46,12 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
+        if (err?.status === 0 || err?.status === 404) {
+          this.errorMessage.set(
+            "Service de connexion introuvable. Vérifiez que l'API locale (npm run dev dans api/) est bien lancée."
+          );
+          return;
+        }
         this.errorMessage.set(
           err?.error?.message || 'Identifiant ou mot de passe incorrect.'
         );

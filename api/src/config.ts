@@ -1,3 +1,8 @@
+try {
+  process.loadEnvFile();
+} catch {
+}
+
 export interface DatabaseConfig {
   host: string;
   port: string;

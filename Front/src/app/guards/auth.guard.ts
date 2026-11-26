@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 
 /**
  * Protège les routes nécessitant une authentification.
  * Redirige vers /login en conservant l'URL demandée dans returnUrl.
  */
-export const authGuard: CanActivateFn = (_route, state) => {
+export const authGuard: CanMatchFn = (_route, segments) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
@@ -14,8 +14,9 @@ export const authGuard: CanActivateFn = (_route, state) => {
     return true;
   }
 
+  const returnUrl = '/' + segments.map((s) => s.path).join('/');
   return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
+    queryParams: { returnUrl }
   });
 };
 

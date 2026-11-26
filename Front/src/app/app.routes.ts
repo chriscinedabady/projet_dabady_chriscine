@@ -17,7 +17,7 @@ export const routes: Routes = [
 
   {
     path: '',
-    canActivate: [authGuard],
+    canMatch: [authGuard],
     loadChildren: () => import('./routes/pollution.routes').then((m) => m.POLLUTION_ROUTES)
   },
 

@@ -1,5 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  provideRouter,
+  Route,
+  Router,
+  RouterStateSnapshot,
+  UrlSegment,
+  UrlTree
+} from '@angular/router';
 import { signal } from '@angular/core';
 import { authGuard, guestGuard } from './auth.guard';
 import { AuthService } from '../services/auth';
@@ -23,22 +31,22 @@ describe('authGuard & guestGuard', () => {
     });
   });
 
-  it('authGuard should allow navigation when user is authenticated', () => {
+  it('authGuard (CanMatchFn) should allow matching when user is authenticated', () => {
     isAuthenticatedSignal.set(true);
 
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as ActivatedRouteSnapshot, { url: '/pollutions' } as RouterStateSnapshot)
+      authGuard({} as Route, [new UrlSegment('pollutions', {})])
     );
 
     expect(result).toBe(true);
   });
 
-  it('authGuard should redirect to /login with returnUrl when user is not authenticated', () => {
+  it('authGuard (CanMatchFn) should redirect to /login with returnUrl when user is not authenticated', () => {
     isAuthenticatedSignal.set(false);
     const router = TestBed.inject(Router);
 
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as ActivatedRouteSnapshot, { url: '/nouvelle-pollution' } as RouterStateSnapshot)
+      authGuard({} as Route, [new UrlSegment('nouvelle-pollution', {})])
     ) as UrlTree;
 
     expect(router.serializeUrl(result)).toBe('/login?returnUrl=%2Fnouvelle-pollution');

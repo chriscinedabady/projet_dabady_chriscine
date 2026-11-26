@@ -1,17 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { SignUpPayload, User } from '../../models/user';
 
 @Component({
   selector: 'app-signup',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent {
   private authService = inject(AuthService);
+
+  readonly isAuthenticated = this.authService.isAuthenticated;
 
   users = signal<User[]>([]);
   isLoading = signal(false);
@@ -24,11 +27,21 @@ export class SignupComponent implements OnInit {
     password: ''
   };
 
-  ngOnInit(): void {
-    this.loadUsers();
+  constructor() {
+    effect(() => {
+      if (this.isAuthenticated()) {
+        this.loadUsers();
+      } else {
+        this.users.set([]);
+      }
+    });
   }
 
   loadUsers(): void {
+    if (!this.isAuthenticated()) {
+      return;
+    }
+
     this.authService.getUsers().subscribe({
       next: (data) => this.users.set(data),
       error: (err) => console.error('Erreur lors du chargement des utilisateurs :', err)
@@ -49,7 +62,9 @@ export class SignupComponent implements OnInit {
         this.isLoading.set(false);
         this.successMessage.set(`Inscription réussie ! Bienvenue ${createdUser.username}.`);
         form.resetForm();
-        this.loadUsers();
+        if (this.isAuthenticated()) {
+          this.loadUsers();
+        }
       },
       error: (error) => {
         this.isLoading.set(false);
@@ -62,7 +77,10 @@ export class SignupComponent implements OnInit {
   }
 
   onDeleteUser(id: number | undefined): void {
-    if (id === undefined) return;
+    if (!this.isAuthenticated() || id === undefined) {
+      return;
+    }
+
     if (confirm('Voulez-vous vraiment supprimer cet utilisateur ?')) {
       this.authService.deleteUser(id).subscribe({
         next: () => {
@@ -70,7 +88,7 @@ export class SignupComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erreur lors de la suppression :', err);
-          this.errorMessage.set("Impossible de supprimer cet utilisateur.");
+          this.errorMessage.set('Impossible de supprimer cet utilisateur.');
         }
       });
     }
