@@ -1,0 +1,49 @@
+<main class="login-container">
+  <h2>Connexion</h2>
+
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <section class="form-group">
+      <label for="identifier">Email ou nom d'utilisateur</label>
+      <input
+        type="text"
+        id="identifier"
+        formControlName="identifier"
+        placeholder="Ex: johndoe ou john@example.com"
+        autocomplete="username"
+      />
+      @if (f.identifier.touched && f.identifier.invalid) {
+        <span class="error-text">Veuillez saisir votre email ou nom d'utilisateur.</span>
+      }
+    </section>
+
+    <section class="form-group">
+      <label for="password">Mot de passe</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="Votre mot de passe"
+        autocomplete="current-password"
+      />
+      @if (f.password.touched && f.password.invalid) {
+        <span class="error-text">Veuillez saisir votre mot de passe.</span>
+      }
+    </section>
+
+    <button type="submit" [disabled]="isLoading()">
+      @if (isLoading()) {
+        <span>Connexion en cours...</span>
+      } @else {
+        <span>Se connecter</span>
+      }
+    </button>
+  </form>
+
+  @if (errorMessage()) {
+    <p class="alert alert-danger">{{ errorMessage() }}</p>
+  }
+
+  <p class="signup-prompt">
+    Pas encore de compte ? <a routerLink="/signup">Créer un compte</a>
+  </p>
+</main>

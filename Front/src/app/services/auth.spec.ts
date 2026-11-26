@@ -17,6 +17,7 @@ describe('AuthService', () => {
   };
 
   beforeEach(() => {
+    localStorage.clear();
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting()]
     });
@@ -26,10 +27,30 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    localStorage.clear();
   });
 
-  it('should be created', () => {
+  it('should be created with unauthenticated state', () => {
     expect(service).toBeTruthy();
+    expect(service.isAuthenticated()).toBe(false);
+    expect(service.currentUser()).toBeNull();
+  });
+
+  it('should login user, update session signals and logout cleanly', () => {
+    service.login({ identifier: 'johndoe', password: 'Password123' }).subscribe((user) => {
+      expect(user).toEqual(mockUser);
+    });
+
+    const req = httpMock.expectOne(`${apiUrl}/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush(mockUser);
+
+    expect(service.isAuthenticated()).toBe(true);
+    expect(service.currentUser()).toEqual(mockUser);
+
+    service.logout();
+    expect(service.isAuthenticated()).toBe(false);
+    expect(service.currentUser()).toBeNull();
   });
 
   it('should fetch users list (GET /api/users)', () => {

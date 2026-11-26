@@ -149,3 +149,36 @@ button[type="submit"] {
     font-style: italic;
   }
 }
+
+
+.login-prompt {
+  margin-top: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+
+  a {
+    color: var(--color-primary);
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+.btn-go-login {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.6rem 1.2rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--transition);
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
